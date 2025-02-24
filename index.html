@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pokemon Game</title>
+</head>
+
+<body onload="updateView()">
+    <div id="app"></div>
+    <script>
+        // Model
+        let app = document.getElementById('app');
+        let html;
+        let randomNumber;
+        let fightStatus = false;
+        let currentPokemon = '';
+        let allPokemons = [
+            pokemon1 = { name: 'Pikachu', level: 10, img: 'img/pokemon1.png', hp: 100 },
+            pokemon2 = { name: 'Squirtle', level: 15, img: 'img/pokemon2.png', hp: 100 },
+            pokemon3 = { name: 'Charmander', level: 20, img: 'img/pokemon3.png', hp: 100 },
+            pokemon4 = { name: 'Evee', level: 13, img: 'img/pokemon4.png', hp: 90 },
+            pokemon5 = { name: 'Bulbasour', level: 15, img: 'img/pokemon5.png', hp: 100 },
+            pokemon6 = { name: 'Jigglypuff', level: 30, img: 'img/pokemon6.png', hp: 120 },
+            pokemon7 = { name: 'Meowth', level: 20, img: 'img/pokemon7.png', hp: 100 },
+            pokemon8 = { name: 'Psyduck', level: 20, img: 'img/pokemon8.png', hp: 110 },
+            pokemon9 = { name: 'Dragonair', level: 42, img: 'img/pokemon9.png', hp: 150 },
+            pokemon10 = { name: 'Snorlax', level: 50, img: 'img/pokemon10.png', hp: 250 },
+        ]
+
+        let allTrainer = [
+            trainer1 = { name: 'Ash', img: 'img/pokemonTrainerIdle.png' },
+        ]
+        let caughtPokemon = []
+
+        // View
+        function updateView() {
+
+            html = /*HTML*/`
+            ${fightStatus ?
+                    `<button onclick="catchPokemon()"> Catch the pokemon</button>` :
+                    `<button onclick="viewRandomPokemon()">Go into the grass</button>`
+                }
+            <div class="trainer">name: ${trainer1.name} 
+                <img src="${trainer1.img}" alt=""> 
+            </div>
+            <div class="pokemons">
+                ${currentPokemon ?? ''}
+            </div>
+            `
+            app.innerHTML = html;
+        }
+
+        // Controller
+        function catchPokemon() {
+            caughtPokemon.push(currentPokemon)
+            fightStatus = false;
+            currentPokemon = ''
+            updateView();
+        }
+
+        function viewRandomPokemon() {
+            randomNumber = Math.floor(Math.random() * allPokemons.length)
+            console.log(randomNumber)
+            currentPokemon = 'name: ' + allPokemons[randomNumber].name + `<br>` + 'level ' + allPokemons[randomNumber].level + `<img src="${allPokemons[randomNumber].img}">` + 'hp ' + allPokemons[randomNumber].hp;
+            updateView();
+
+            setTimeout(() => {
+                alert(allPokemons[randomNumber].name + ' wants to fight')
+                fightStatus = true;
+                updateView();
+            }, 2000);
+        }
+
+
+
+        function fightTrainer() {
+
+        }
+
+
+
+    </script>
+</body>
+
+</html>

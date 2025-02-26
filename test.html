@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pokemon Game</title>
+    <style>
+        .game-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+        }
+
+        .control-buttons {
+            margin-bottom: 20px;
+        }
+
+        button {
+            padding: 10px 15px;
+            margin-right: 10px;
+            cursor: pointer;
+            background-color: #ffcb05;
+            border: 2px solid #3c5aa6;
+            border-radius: 5px;
+            color: #3c5aa6;
+            font-weight: bold;
+        }
+
+        .battle-area {
+            display: flex;
+            justify-content: space-between;
+            margin: 20px 0;
+        }
+
+        .trainers-pokemon {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .trainers-pokemon img {
+            width: 100%;
+            cursor: pointer;
+        }
+
+        img {
+            max-width: 150px;
+            height: auto;
+        }
+
+        .pokemon-card {
+            border: 2px solid #3c5aa6;
+            border-radius: 8px;
+            padding: 10px;
+            text-align: center;
+            background-color: #f0f0f0;
+        }
+
+        .wild-pokemon,
+        .selected-pokemon {
+            border: 2px dashed #ff5722;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 10px;
+            background-color: rgba(255, 235, 205, 0.5);
+        }
+
+        .trainer {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app"></div>
+
+    <script>
+        // Model
+        const model = {
+            app: {},
+            input: {},
+            data: {
+                allPokemons: [
+                    { name: 'Pikachu', level: 10, img: 'img/pokemon1.png', hp: 100 },
+                    { name: 'Squirtle', level: 15, img: 'img/pokemon2.png', hp: 100 },
+                    { name: 'Charmander', level: 20, img: 'img/pokemon3.png', hp: 100 },
+                    { name: 'Evee', level: 13, img: 'img/pokemon4.png', hp: 90 },
+                    { name: 'Bulbasour', level: 15, img: 'img/pokemon5.png', hp: 100 },
+                    { name: 'Jigglypuff', level: 30, img: 'img/pokemon6.png', hp: 120 },
+                    { name: 'Meowth', level: 20, img: 'img/pokemon7.png', hp: 100 },
+                    { name: 'Psyduck', level: 20, img: 'img/pokemon8.png', hp: 110 },
+                    { name: 'Dragonair', level: 42, img: 'img/pokemon9.png', hp: 150 },
+                    { name: 'Snorlax', level: 50, img: 'img/pokemon10.png', hp: 250 },
+                ],
+                allTrainers: [
+                    { name: 'Ash', img: 'img/pokemonTrainerIdle.png' },
+                ]
+            },
+        };
+
+        let app = document.getElementById('app');
+        let html;
+        let randomNumber;
+        let fightStatus = false;
+        let currentPokemonFightingAgainst = '';
+        let clickEnabled = true;
+        let showCasePokemon = [];
+        let userSelectedPokemon;
+        let haveUserSelectedPokemon = false;
+        let trainersPokemonHtml = "";
+        let caughtPokemon = [];
+
+        // View
+        function updateView() {
+            html = /*HTML*/`
+            <div class="game-container">
+                <div class="control-buttons">
+                    ${fightStatus ?
+                    `<button ${clickEnabled ? 'onclick="catchPokemon()"' : 'disabled'}>Catch the pokemon</button>
+                        <button ${clickEnabled ? 'onclick="viewTheTrainersPokemon()"' : 'disabled'}>Select Pokemon</button>`
+                    :
+                    `<button ${clickEnabled ? 'onclick="fightRandomPokemon()"' : 'disabled'}>Go into the grass</button>
+                        <button ${clickEnabled ? 'onclick="viewTheTrainersPokemon()"' : 'disabled'}>View my pokemon</button>`
+                }
+                </div>
+                
+                <div class="trainer">
+                    <div>Trainer: ${model.data.allTrainers[0].name}</div>
+                    <img src="${model.data.allTrainers[0].img}" alt="Trainer"> 
+                </div>
+                
+                <div class="battle-area">
+                    ${currentPokemonFightingAgainst ? `
+                    <div class="wild-pokemon">
+                        ${currentPokemonFightingAgainst}
+                    </div>` : ''}
+                    
+                    ${haveUserSelectedPokemon ? `
+                    <div class="selected-pokemon">
+                        ${userSelectedPokemon}
+                    </div>` : ''}
+                </div>
+                
+                <div class="trainers-pokemon">
+                    ${trainersPokemonHtml}
+                </div>
+            </div>`;
+
+            app.innerHTML = html;
+        }
+
+        function viewTheTrainersPokemon() {
+            showCasePokemon = [...caughtPokemon]; // Create a copy using spread operator
+
+            if (!fightStatus) {
+                trainersPokemonHtml = showCasePokemon.map((pokemon, index) => /*HTML*/`
+                    <div class="pokemon-card">
+                        <div>${pokemon.name}</div>
+                        <img src="${pokemon.img}" alt="${pokemon.name}">
+                        <div>Level: ${pokemon.level}</div>
+                        <div>HP: ${pokemon.hp}</div>
+                    </div>
+                `).join('');
+            } else {
+                trainersPokemonHtml = showCasePokemon.map((pokemon, index) => /*HTML*/`
+                    <div class="pokemon-card">
+                        <div>${pokemon.name}</div>
+                        <img onclick="selectPokemonForFight(${index})" style="cursor: pointer;" src="${pokemon.img}" alt="${pokemon.name}">
+                        <div>Level: ${pokemon.level}</div>
+                        <div>HP: ${pokemon.hp}</div>
+                    </div>
+                `).join('');
+            }
+
+            updateView();
+        }
+
+        // Controller
+        function catchPokemon() {
+            caughtPokemon.push(model.data.allPokemons[randomNumber]);
+            fightStatus = false;
+            currentPokemonFightingAgainst = '';
+            haveUserSelectedPokemon = false;
+            updateView();
+            alert(`You caught ${model.data.allPokemons[randomNumber].name}!`);
+        }
+
+        function fightRandomPokemon() {
+            trainersPokemonHtml = '';
+            randomNumber = Math.floor(Math.random() * model.data.allPokemons.length);
+
+            const pokemon = model.data.allPokemons[randomNumber];
+            currentPokemonFightingAgainst = /*HTML*/`
+                <div class="pokemon-card">
+                    <div>Wild Pokemon: ${pokemon.name}</div>
+                    <img src="${pokemon.img}" alt="${pokemon.name}">
+                    <div>Level: ${pokemon.level}</div>
+                    <div>HP: ${pokemon.hp}</div>
+                </div>
+            `;
+
+            updateView();
+
+            setTimeout(() => {
+                alert(pokemon.name + ' wants to fight!');
+                fightStatus = true;
+                updateView();
+            }, 100);
+        }
+
+        function selectPokemonForFight(arrayId) {
+            haveUserSelectedPokemon = true;
+            const pokemon = caughtPokemon[arrayId];
+            userSelectedPokemon = /*HTML*/`
+                <div class="pokemon-card">
+                    <div>Your Pokemon: ${pokemon.name}</div>
+                    <img src="${pokemon.img}" alt="${pokemon.name}">
+                    <div>Level: ${pokemon.level}</div>
+                    <div>HP: ${pokemon.hp}</div>
+                </div>
+            `;
+            updateView();
+
+            // Simulate battle (you can expand this)
+            setTimeout(() => {
+                const wildPokemon = model.data.allPokemons[randomNumber];
+                const playerPokemon = caughtPokemon[arrayId];
+
+                // Simple battle logic - higher level wins
+                if (playerPokemon.level >= wildPokemon.level) {
+                    alert(`${playerPokemon.name} won the battle against ${wildPokemon.name}!`);
+                } else {
+                    alert(`${playerPokemon.name} lost to ${wildPokemon.name}. Try catching it anyway!`);
+                }
+            }, 1000);
+        }
+
+        // Initialize the view
+        updateView();
+    </script>
+</body>
+
+</html>

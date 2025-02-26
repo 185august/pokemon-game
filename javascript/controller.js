@@ -18,13 +18,8 @@ function standardgameState() {
     gameState.battleText = '';
     gameState.userTurnInBattle = true;
     gameState.availablePokemons = model.data.allPokemons.map(pokemon => ({ ...pokemon }));
-    gameState.showCasePokemon = gameState.pokemonsTheUserHasCaught.map(pokemon => ({ ...pokemon }));
     gameState.userPokemonForBattle = null;
     updateView();
-}
-
-function assignUserPikachuAtStart() {
-    gameState.availablePokemons = model.data.allPokemons.find(({ name }) => name == 'Pikachu')
 }
 
 function catchPokemon() {
@@ -35,8 +30,8 @@ function catchPokemon() {
 }
 
 function healThePokemon(index) {
-    const findPokemon = model.data.allPokemons.find(({ name }) => name == gameState.showCasePokemon[index].name)
-    gameState.showCasePokemon[index].hp = findPokemon.hp;
+    const findPokemon = model.data.allPokemons.find(({ name }) => name == gameState.pokemonsTheUserHasCaught[index].name)
+    gameState.pokemonsTheUserHasCaught[index].hp = findPokemon.hp;
     createTheTrainersPokemonHtml();
     updateView();
 }
@@ -63,7 +58,7 @@ function fightRandomPokemon() {
 function selectPokemonForFight(arrayId) {
     gameState.haveUserSelectedPokemon = true;
     gameState.trainersPokemonHtml = [];
-    gameState.userPokemonForBattle = gameState.showCasePokemon[arrayId];
+    gameState.userPokemonForBattle = gameState.pokemonsTheUserHasCaught[arrayId];
     createTrainersPokemonForBattleHtml();
     updateView();
 }

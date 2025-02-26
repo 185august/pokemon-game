@@ -59,17 +59,20 @@ function createWildPokemonHtml() {
 }
 
 function createTheTrainersPokemonHtml() {
-    gameState.showCasePokemon = gameState.pokemonsTheUserHasCaught.map(pokemon => pokemon)
+    console.log(gameState.pokemonsTheUserHasCaught)
+    if (gameState.pokemonsTheUserHasCaught.length === 0) {
+        gameState.pokemonsTheUserHasCaught = [{ ...model.data.allPokemons.find(pokemon => pokemon.name === 'Pikachu') }];
+    }
     if (!gameState.fightStatus) {
-        gameState.trainersPokemonHtml = gameState.showCasePokemon.map((pokemon, index) => `
-    ${createStandardHtml('pokemon-card', '', pokemon, index)}
-    `).join('');
+        gameState.trainersPokemonHtml = gameState.pokemonsTheUserHasCaught.map((pokemon, index) => `
+            ${createStandardHtml('pokemon-card', '', pokemon, index)}
+        `).join('');
+    } else {
+        gameState.trainersPokemonHtml = gameState.pokemonsTheUserHasCaught.map((pokemon, index) => /*HTML*/`
+            ${createStandardHtml('pokemon-card', `selectPokemonForFight(${index})`, pokemon)}
+        `).join('');
     }
-    else {
-        gameState.trainersPokemonHtml = gameState.showCasePokemon.map((pokemon, index) => /*HTML*/`
-        ${createStandardHtml('pokemon-card', `selectPokemonForFight(${index})`, pokemon)}
-    `).join('');
-    }
+
     updateView();
 }
 

@@ -1,9 +1,11 @@
-function copyTheArray(array1, array2) {
+/* function copyTheArray(array1, array2) {
     for (let index = 0; index < array1.length; index++) {
         const element = array1[index];
         array2 = element;
     }
-}
+} */
+
+
 function standardgameState() {
     gameState.currentWildPokemonInBattle = null;
     gameState.userSelectedPokemonHtml = '';
@@ -21,20 +23,27 @@ function standardgameState() {
     updateView();
 }
 
+function assignUserPikachuAtStart() {
+    gameState.availablePokemons = model.data.allPokemons.find(({ name }) => name == 'Pikachu')
+}
+
 function catchPokemon() {
     gameState.pokemonsTheUserHasCaught.push(gameState.availablePokemons[randomNumber])
+
     standardgameState();
     updateView();
 }
 
 function healThePokemon(index) {
-    gameState.showCasePokemon[index].hp = gameState.pokemonsTheUserHasCaught.hp;
+    const findPokemon = model.data.allPokemons.find(({ name }) => name == gameState.showCasePokemon[index].name)
+    gameState.showCasePokemon[index].hp = findPokemon.hp;
     createTheTrainersPokemonHtml();
     updateView();
 }
 
 function fightRandomPokemon() {
     standardgameState();
+    gameState.copyOfUserPokemons = gameState.pokemonsTheUserHasCaught.map(pokemon => ({ ...pokemon }))
     gameState.availablePokemons = model.data.allPokemons.map(pokemon => ({ ...pokemon }));
     //gameState.availablePokemons = [...model.data.allPokemons]
     /* copyTheArray(model.data.allPokemons, gameState.availablePokemons) */
@@ -70,31 +79,20 @@ function checkBattleStatus() {
         gameState.userPokemonForBattle.level = gameState.userPokemonForBattle.level += 1;
         setTimeout(() => {
             standardgameState();
-        }, 2000);
+        }, 3000);
     }
     if (gameState.userPokemonForBattle.hp <= 0) {
         gameState.battleText = 'Wild ' + gameState.currentWildPokemonInBattle.name + (' has won')
         gameState.hasTheBattleBeenWon = true;
         setTimeout(() => {
             standardgameState();
-        }, 2000);
+        }, 3000);
     }
     updateView();
 
 }
 
-function pokemonAttack() {
-    //User attack
-    if (gameState.hasTheBattleBeenWon) {
-        return
-    }
-    let attackNumber;
-    attackNumber = Math.floor(Math.random(10 - 1) * gameState.userPokemonForBattle.level) + 1;
-    gameState.currentWildPokemonInBattle.hp = gameState.currentWildPokemonInBattle.hp - attackNumber;
-    gameState.battleText = gameState.userPokemonForBattle.name + ' hit for ' + attackNumber;
-    gameState.clickEnabled = false;
-    createWildPokemonHtml();
-    // wild pokemon attack
+function enemyPokemonAttack() {
     setTimeout(() => {
         if (gameState.hasTheBattleBeenWon) {
             return
@@ -109,9 +107,24 @@ function pokemonAttack() {
 
         }
     }, 1000);
-    updateView();
-    checkBattleStatus();
-    console.log(attackNumber)
+}
+
+function userPokemonAttack() {
+    //User attack
+    if (gameState.hasTheBattleBeenWon) {
+        return
+    } else {
+        let attackNumber;
+        attackNumber = Math.floor(Math.random(10 - 1) * gameState.userPokemonForBattle.level) + 1;
+        gameState.currentWildPokemonInBattle.hp = gameState.currentWildPokemonInBattle.hp - attackNumber;
+        gameState.battleText = gameState.userPokemonForBattle.name + ' hit for ' + attackNumber;
+        gameState.clickEnabled = false;
+        checkBattleStatus();
+        createWildPokemonHtml();
+        enemyPokemonAttack();
+        updateView();
+        console.log(attackNumber)
+    }
 
 }
 

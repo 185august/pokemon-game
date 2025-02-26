@@ -18,7 +18,7 @@ function updateView() {
             ${gameState.haveUserSelectedPokemon ? `
                 <div class="selected-pokemon">
                     ${gameState.userSelectedPokemonHtml}
-                    ${gameState.clickEnabled ? `<button onclick="pokemonAttack()" >attack</button>` : ''}
+                    ${gameState.clickEnabled ? `<button onclick="userPokemonAttack()" >attack</button>` : ''}
                 </div>`: `<div></div>`}
                 <div class="battle-text">
                 ${gameState.battleText ?? ''}
@@ -40,6 +40,7 @@ function updateView() {
     </div>`;
     app.innerHTML = html;
 }
+
 function createStandardHtml(cssClass, functionName, arrayName, index) {
     return /*HTML*/`
     <div onclick="${functionName}" class="${cssClass}">
@@ -58,7 +59,7 @@ function createWildPokemonHtml() {
 }
 
 function createTheTrainersPokemonHtml() {
-    gameState.showCasePokemon = [...gameState.pokemonsTheUserHasCaught]
+    gameState.showCasePokemon = gameState.pokemonsTheUserHasCaught.map(pokemon => pokemon)
     if (!gameState.fightStatus) {
         gameState.trainersPokemonHtml = gameState.showCasePokemon.map((pokemon, index) => `
     ${createStandardHtml('pokemon-card', '', pokemon, index)}

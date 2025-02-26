@@ -19,6 +19,7 @@ const model = {
             showCasePokemon: [],
             userPokemonForBattle: null,
             randomNumber: '',
+            copyOfUserPokemons: []
         },
     },
     data: {
@@ -39,7 +40,9 @@ const model = {
         ]
     },
 }
-model.input.gameState.pokemonsTheUserHasCaught = [model.data.allPokemons[0]]
 //global gameState varibel for å gjøre koden litt mindre rotete
-const gameState = model.input.gameState;
+const gameState = model.input.gameState;/* 
+gameState.availablePokemons = model.data.allPokemons.map(pokemon => ({ ...pokemon }));
+gameState.pokemonsTheUserHasCaught = gameState.availablePokemons.find(({ name }) => name == 'Pikachu') */
+
 

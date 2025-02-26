@@ -62,7 +62,6 @@ function createTheTrainersPokemonHtml() {
     if (!gameState.fightStatus) {
         gameState.trainersPokemonHtml = gameState.showCasePokemon.map((pokemon, index) => `
     ${createStandardHtml('pokemon-card', '', pokemon, index)}
-    
     `).join('');
     }
     else {

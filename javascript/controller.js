@@ -1,3 +1,9 @@
+function copyTheArray(array1, array2) {
+    for (let index = 0; index < array1.length; index++) {
+        const element = array1[index];
+        array2 = element;
+    }
+}
 function standardgameState() {
     gameState.currentWildPokemonInBattle = null;
     gameState.userSelectedPokemonHtml = '';
@@ -9,8 +15,8 @@ function standardgameState() {
     gameState.currentPokemonFightingAgainstHtml = '';
     gameState.battleText = '';
     gameState.userTurnInBattle = true;
-    gameState.availablePokemons = [...model.data.allPokemons];
-    gameState.showCasePokemon = [...gameState.pokemonsTheUserHasCaught];
+    gameState.availablePokemons = model.data.allPokemons.map(pokemon => ({ ...pokemon }));
+    gameState.showCasePokemon = gameState.pokemonsTheUserHasCaught.map(pokemon => ({ ...pokemon }));
     gameState.userPokemonForBattle = null;
     updateView();
 }
@@ -29,7 +35,11 @@ function healThePokemon(index) {
 
 function fightRandomPokemon() {
     standardgameState();
-    gameState.availablePokemons = [...model.data.allPokemons];
+    gameState.availablePokemons = model.data.allPokemons.map(pokemon => ({ ...pokemon }));
+    //gameState.availablePokemons = [...model.data.allPokemons]
+    /* copyTheArray(model.data.allPokemons, gameState.availablePokemons) */
+    /* 
+    gameState.availablePokemons = [...model.data.allPokemons]; */
     randomNumber = Math.floor(Math.random() * gameState.availablePokemons.length);
     gameState.currentWildPokemonInBattle = gameState.availablePokemons[randomNumber];
 

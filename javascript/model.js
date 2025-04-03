@@ -7,9 +7,11 @@ const model = {
             haveUserSelectedPokemon: false,
             currentWildPokemonInBattle: null,
             userSelectedPokemonHtml: '',
-            trainersPokemonHtml: '',
+            trainersPokemonHtml: [],
+            enemyTrainersPokemonHtml: [],
             clickEnabled: true,
             fightStatus: false,
+            fightingAnotherTrainer: false,
             hasTheBattleBeenWon: false,
             currentPokemonFightingAgainstHtml: '',
             battleText: '',
@@ -36,6 +38,13 @@ const model = {
         ],
         allTrainers: [
             { name: 'Ash', img: 'img/pokemonTrainerIdle.png' },
+            { name: 'Markus', img: 'img/pokemonEnemyTrainerIdle.png' }
+        ],
+        enemyTrainersPokemons: [
+            { name: 'Bulbasour', level: 20, img: 'img/pokemon5.png', hp: 50 },
+            { name: 'Jigglypuff', level: 25, img: 'img/pokemon6.png', hp: 105 },
+            { name: 'Dragonair', level: 45, img: 'img/pokemon9.png', hp: 240 },
+
         ]
     },
 }

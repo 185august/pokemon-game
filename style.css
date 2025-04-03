@@ -8,7 +8,7 @@
     "controls"
     "battle"
     "pokemon"
-    "trainer";
+    "trainers";
   grid-template-rows:
     auto
     auto
@@ -55,15 +55,29 @@
 }
 
 .trainers-pokemon {
+  display: grid;
   grid-area: pokemon;
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
   gap: 15px;
 }
 
-.trainer {
-  grid-area: trainer;
-  text-align: center;
+.trainers-area {
+  display: grid;
+  grid-area: trainers;
+  gap: 50px;
+  grid-template-columns: 1fr 1fr;
+  grid-template-areas: "user-trainer enemy-trainer";
+}
+
+.user-trainer {
+  grid-area: user-trainer;
+  justify-self: start;
+}
+
+.enemy-trainer {
+  grid-area: enemy-trainer;
+  justify-self: end;
 }
 
 button {
@@ -105,11 +119,13 @@ img {
   background-color: #f0f0f0;
 }
 
-.trainer img {
+.user-trainer,
+.enemy-trainer img {
   max-width: 100px;
 }
 
-.trainer div {
+.user-trainer,
+.enemy-trainer div {
   font-weight: bold;
   color: #3c5aa6;
   margin-bottom: 5px;

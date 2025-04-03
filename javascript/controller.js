@@ -12,6 +12,7 @@ function standardgameState() {
     gameState.trainersPokemonHtml = '';
     gameState.clickEnabled = true;
     gameState.fightStatus = false;
+    gameState.fightingAnotherTrainer = false;
     gameState.haveUserSelectedPokemon = false;
     gameState.hasTheBattleBeenWon = false;
     gameState.currentPokemonFightingAgainstHtml = '';
@@ -23,7 +24,7 @@ function standardgameState() {
 }
 
 function catchPokemon() {
-    gameState.pokemonsTheUserHasCaught.push(gameState.availablePokemons[randomNumber])
+    gameState.pokemonsTheUserHasCaught.push(gameState.availablePokemons[gameState.randomNumber])
 
     standardgameState();
     updateView();
@@ -44,11 +45,11 @@ function fightRandomPokemon() {
     /* copyTheArray(model.data.allPokemons, gameState.availablePokemons) */
     /* 
     gameState.availablePokemons = [...model.data.allPokemons]; */
-    randomNumber = Math.floor(Math.random() * gameState.availablePokemons.length);
-    gameState.currentWildPokemonInBattle = gameState.availablePokemons[randomNumber];
+    gameState.randomNumber = Math.floor(Math.random() * gameState.availablePokemons.length);
+    gameState.currentWildPokemonInBattle = gameState.availablePokemons[gameState.randomNumber];
 
     setTimeout(() => {
-        alert(gameState.availablePokemons[randomNumber].name + ' wants to fight');
+        alert(gameState.availablePokemons[gameState.randomNumber].name + ' wants to fight');
         gameState.fightStatus = true;
         createWildPokemonHtml();
         updateView();
@@ -63,6 +64,16 @@ function selectPokemonForFight(arrayId) {
     updateView();
 }
 
+function fightEnemyTrainer() {
+    createTheEnemyTrainersPokemonHtml();
+    gameState.fightStatus = true;
+    gameState.fightingAnotherTrainer = true;
+    updateView();
+}
+
+function runAwayFromBattle() {
+    standardgameState();
+}
 
 function checkBattleStatus() {
     if (gameState.hasTheBattleBeenWon) {
